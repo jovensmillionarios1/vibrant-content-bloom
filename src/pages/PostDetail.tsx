@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -10,8 +9,8 @@ import { formatDate } from '@/lib/utils';
 import { ArrowLeft, BookOpen, Calendar, Clock, Share2, Tag as TagIcon } from 'lucide-react';
 import { toast } from "sonner";
 import AdCard from '@/components/AdCard';
+import { parseMarkdown, processMDXComponents } from '@/lib/mdx';
 
-// Mock data for a single post
 const MOCK_POST = {
   _id: '1',
   slug: 'getting-started-with-nextjs-and-mdx',
@@ -132,7 +131,6 @@ In future tutorials, we'll explore more advanced techniques for working with MDX
   }
 };
 
-// Mock data for related posts
 const RELATED_POSTS = [
   {
     _id: '2',
@@ -160,18 +158,47 @@ const PostDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<typeof MOCK_POST | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<typeof RELATED_POSTS>([]);
+  const [processedContent, setProcessedContent] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   
   useEffect(() => {
-    // In a real application, we would fetch the post data from the API
-    // For now, we'll use mock data
-    setPost(MOCK_POST);
-    setRelatedPosts(RELATED_POSTS);
+    const fetchPost = async () => {
+      try {
+        setIsLoading(true);
+        // In a real application, fetch from API
+        // const response = await fetch(`/api/posts/${slug}`);
+        // const data = await response.json();
+        
+        // For now, using mock data
+        const mockPost = MOCK_POST;
+        setPost(mockPost);
+        setRelatedPosts(RELATED_POSTS);
+        
+        // Process the MDX content
+        if (mockPost.content) {
+          // First process any MDX components
+          const contentWithComponents = processMDXComponents(
+            mockPost.content, 
+            MDXComponents
+          );
+          
+          // Then convert the markdown to HTML
+          const htmlContent = await parseMarkdown(contentWithComponents);
+          setProcessedContent(htmlContent);
+        }
+      } catch (error) {
+        console.error('Error fetching post:', error);
+        toast.error("Failed to load the article");
+      } finally {
+        setIsLoading(false);
+      }
+    };
     
+    fetchPost();
     // Scroll to top when page loads
     window.scrollTo(0, 0);
   }, [slug]);
   
-  // Handle share functionality
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -190,7 +217,7 @@ const PostDetail = () => {
     }
   };
   
-  if (!post) {
+  if (isLoading || !post) {
     return (
       <>
         <Header />
@@ -293,10 +320,8 @@ const PostDetail = () => {
             )}
             
             {/* Content */}
-            <div className="prose max-w-none">
-              {/* This is where the MDX content would be rendered */}
-              {/* For demo purposes, we'll render it as plain text/HTML */}
-              <div dangerouslySetInnerHTML={{ __html: post.content }} />
+            <div className="prose max-w-none dark:prose-invert prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h2:mt-10 prose-p:text-base prose-pre:bg-muted prose-pre:text-sm">
+              <div dangerouslySetInnerHTML={{ __html: processedContent }} />
             </div>
             
             {/* Share Button */}
