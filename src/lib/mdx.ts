@@ -37,4 +37,3 @@ export function processMDXComponents(content: string, components: Record<string,
   
   return processedContent;
 }
-
