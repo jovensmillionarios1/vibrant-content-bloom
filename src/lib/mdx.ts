@@ -1,7 +1,7 @@
 
 import { remark } from 'remark';
-import remarkHtml from 'remark-html';
-import remarkGfm from 'remark-gfm';
+import html from 'remark-html';
+import gfm from 'remark-gfm';
 
 /**
  * Parse markdown content to HTML
@@ -10,8 +10,8 @@ import remarkGfm from 'remark-gfm';
  */
 export async function parseMarkdown(content: string): Promise<string> {
   const result = await remark()
-    .use(remarkGfm) // GitHub-flavored markdown
-    .use(remarkHtml, { sanitize: false }) // Convert to HTML, don't sanitize to allow custom elements
+    .use(gfm) // GitHub-flavored markdown
+    .use(html, { sanitize: false }) // Convert to HTML, don't sanitize to allow custom elements
     .process(content);
   
   return result.toString();
