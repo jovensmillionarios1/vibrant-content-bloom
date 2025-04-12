@@ -131,12 +131,44 @@
     @apply border-l-4 border-primary/20 pl-4 italic my-6;
   }
 
+  /* Improved code styling */
   .prose code {
-    @apply bg-muted px-1 py-0.5 rounded text-sm;
+    @apply bg-muted px-1 py-0.5 rounded text-sm font-mono;
   }
 
   .prose pre {
-    @apply bg-muted p-4 rounded-lg my-6 overflow-x-auto;
+    @apply my-6 overflow-x-auto;
+    position: relative;
+  }
+
+  /* Enhanced code block styling */
+  .prose .code-block-wrapper {
+    @apply my-6 overflow-hidden rounded-lg border border-border;
+  }
+  
+  .prose .code-block-header {
+    @apply bg-muted/80 px-4 py-2 text-xs font-mono text-muted-foreground text-right border-b border-border;
+  }
+  
+  .prose pre code {
+    @apply block bg-muted p-4 text-sm text-foreground overflow-x-auto;
+  }
+
+  /* Language-specific syntax highlighting basics */
+  .prose .language-bash, .prose .language-shell {
+    @apply text-green-600 dark:text-green-400;
+  }
+  
+  .prose .language-javascript, .prose .language-js {
+    @apply text-blue-600 dark:text-blue-400;
+  }
+  
+  .prose .language-jsx, .prose .language-tsx {
+    @apply text-purple-600 dark:text-purple-400;
+  }
+  
+  .prose .language-markdown, .prose .language-md {
+    @apply text-gray-800 dark:text-gray-300;
   }
 
   .prose img {
@@ -163,5 +195,36 @@
 @layer utilities {
   .ad-container {
     @apply my-8 py-4 px-4 border border-border rounded-lg bg-card/50;
+  }
+
+  /* Enhanced ad container styling */
+  .ad-container .ad-label {
+    @apply text-xs text-muted-foreground mb-2;
+  }
+
+  .ad-container .ad-content {
+    @apply p-4;
+  }
+
+  /* Google ad specific styling */
+  .google-ad .ad-content {
+    @apply min-h-[250px] flex items-center justify-center bg-muted/50 rounded text-center;
+  }
+
+  /* Amazon ad specific styling */
+  .amazon-ad .ad-product-info {
+    @apply flex flex-col md:flex-row gap-4;
+  }
+
+  .amazon-ad .ad-product-image {
+    @apply bg-muted aspect-square rounded flex items-center justify-center flex-shrink-0 w-full md:w-1/3;
+  }
+
+  .amazon-ad .ad-product-title {
+    @apply text-lg font-bold mb-2;
+  }
+
+  .amazon-ad .ad-product-link {
+    @apply text-sm text-primary flex items-center gap-1 hover:underline mt-4;
   }
 }

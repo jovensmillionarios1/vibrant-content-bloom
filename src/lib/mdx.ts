@@ -26,13 +26,64 @@ export async function parseMarkdown(content: string): Promise<string> {
 export function processMDXComponents(content: string, components: Record<string, any>): string {
   let processedContent = content;
   
-  // Replace component tags like <Alert> with their HTML representation
+  // Process code blocks with syntax highlighting
+  processedContent = processedContent.replace(
+    /<CodeBlock language="([^"]*)">(.*?)<\/CodeBlock>/gs,
+    (match, language, code) => {
+      return `<div class="code-block-wrapper">
+                <div class="code-block-header">${language}</div>
+                <pre class="language-${language}"><code class="language-${language}">${code}</code></pre>
+              </div>`;
+    }
+  );
+  
+  // Process ads specifically
+  processedContent = processedContent.replace(
+    /<(GoogleAd|AmazonAd)([^>]*)>(.*?)<\/(GoogleAd|AmazonAd)>/gs,
+    (match, adType, attributes, content, closingTag) => {
+      // Extract ad attributes from the string
+      const props: Record<string, string> = {};
+      
+      const attrMatches = attributes.matchAll(/(\w+)="([^"]*)"/g);
+      for (const attrMatch of Array.from(attrMatches)) {
+        props[attrMatch[1]] = attrMatch[2];
+      }
+      
+      if (adType === 'GoogleAd') {
+        return `<div class="ad-container google-ad">
+                  <div class="ad-label">Advertisement</div>
+                  <div class="ad-content" data-slot="${props.slot || ''}" data-client="${props.client || ''}">
+                    [Google AdSense Ad]
+                  </div>
+                </div>`;
+      } else if (adType === 'AmazonAd') {
+        return `<div class="ad-container amazon-ad">
+                  <div class="ad-label">Amazon Affiliate</div>
+                  <div class="ad-content" data-product-id="${props.productId || ''}" data-title="${props.title || 'Recommended Product'}">
+                    <div class="ad-product-info">
+                      <div class="ad-product-image">[Product Image]</div>
+                      <div class="ad-product-title">${props.title || 'Recommended Product'}</div>
+                      <a href="https://amazon.com/dp/${props.productId || 'B0EXAMPLE'}" target="_blank" 
+                         rel="noopener noreferrer sponsored" class="ad-product-link">View on Amazon</a>
+                    </div>
+                  </div>
+                </div>`;
+      }
+      
+      return match; // return original if not handled
+    }
+  );
+  
+  // Replace other component tags like <Alert> with their HTML representation
   Object.keys(components).forEach(componentName => {
-    const regex = new RegExp(`<${componentName}([^>]*)>(.*?)<\/${componentName}>`, 'gs');
-    processedContent = processedContent.replace(regex, (match, props, children) => {
-      // In a real implementation, you'd parse props and create the component
-      return `<div class="mdx-component mdx-${componentName.toLowerCase()}">${children}</div>`;
-    });
+    if (componentName !== 'GoogleAd' && componentName !== 'AmazonAd' && componentName !== 'CodeBlock') {
+      const regex = new RegExp(`<${componentName}([^>]*)>(.*?)<\/${componentName}>`, 'gs');
+      processedContent = processedContent.replace(regex, (match, props, children) => {
+        // Parse props if needed
+        const className = `mdx-component mdx-${componentName.toLowerCase()}`;
+        return `<div class="${className}">${children}</div>`;
+      });
+    }
   });
   
   return processedContent;
