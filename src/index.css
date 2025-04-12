@@ -1,3 +1,6 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,19 +38,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -97,5 +93,75 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-bold tracking-tight;
+  }
+
+  .prose h1 {
+    @apply text-3xl md:text-4xl lg:text-5xl mb-6;
+  }
+
+  .prose h2 {
+    @apply text-2xl md:text-3xl mt-8 mb-4;
+  }
+
+  .prose h3 {
+    @apply text-xl md:text-2xl mt-6 mb-3;
+  }
+
+  .prose p {
+    @apply my-4 leading-relaxed;
+  }
+
+  .prose a {
+    @apply text-primary underline underline-offset-2 hover:text-primary/80 transition-colors;
+  }
+
+  .prose ul, .prose ol {
+    @apply my-4 ml-6;
+  }
+
+  .prose li {
+    @apply mb-2;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-primary/20 pl-4 italic my-6;
+  }
+
+  .prose code {
+    @apply bg-muted px-1 py-0.5 rounded text-sm;
+  }
+
+  .prose pre {
+    @apply bg-muted p-4 rounded-lg my-6 overflow-x-auto;
+  }
+
+  .prose img {
+    @apply rounded-lg my-8 mx-auto shadow-md;
+  }
+
+  .prose .table-container {
+    @apply overflow-x-auto my-6;
+  }
+
+  .prose table {
+    @apply w-full border-collapse;
+  }
+
+  .prose table th {
+    @apply bg-muted p-2 text-left border;
+  }
+
+  .prose table td {
+    @apply p-2 border;
+  }
+}
+
+@layer utilities {
+  .ad-container {
+    @apply my-8 py-4 px-4 border border-border rounded-lg bg-card/50;
   }
 }
